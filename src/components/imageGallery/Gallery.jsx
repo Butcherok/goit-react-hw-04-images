@@ -53,6 +53,7 @@ export default function ImageGallery({ querySearch, nextPage, loadMore }) {
     return () => {
       controller.abort();
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nextPage, querySearch]);
 
   function getSimpleData(data) {
