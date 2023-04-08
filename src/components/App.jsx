@@ -1,32 +1,30 @@
-import React, { Component } from 'react';
+import { useState } from 'react';
 import { Container } from './App.styled';
-import { ImageGallery } from './imageGallery/Gallery';
-import { Searchbar } from './searchbar/Searchbar';
+import ImageGallery from './imageGallery/Gallery';
+import Searchbar from './searchbar/Searchbar';
 
-export class App extends Component {
-  state = {
-    query: '',
-    page: 1,
+export default function App() {
+  const [query, setQuery] = useState('');
+  const [page, setPage] = useState(1);
+
+  const onSubmit = value => {
+    setQuery(value);
+    setPage(1);
   };
 
-  onSubmit = value => {
-    this.setState({ query: value, page: 1 });
+  const loadMore = () => {
+    setPage(prefState => prefState + 1);
   };
 
-  loadMore = () => {
-    this.setState(prevState => ({ page: prevState.page + 1 }));
-  };
 
-  render() {
-    return (
-      <Container>
-        <Searchbar onSubmit={this.onSubmit} />
-        <ImageGallery
-          querySearch={this.state.query}
-          nextPage={this.state.page}
-          loadMore={this.loadMore}
-        />
-      </Container>
-    );
-  }
+  return (
+    <Container>
+      <Searchbar onSubmit={onSubmit} />
+      <ImageGallery
+        querySearch={query}
+        nextPage={page}
+        loadMore={loadMore}
+      />
+    </Container>
+  );
 }
