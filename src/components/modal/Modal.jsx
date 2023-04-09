@@ -1,47 +1,40 @@
-import React, { Component } from 'react';
+import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 import { ModalBox, Overlay } from './Modal.styled';
 
 const modal = document.querySelector('#modal-root');
 
-export class Modal extends Component {
-  
-  componentDidMount() {
-    document.addEventListener('keydown', this.onKeyClick);
-  }
+export const Modal = ({ image: { largeImageURL, tags }, toggleModal }) => {
 
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.onKeyClick);
-  }
+  useEffect(() => {
+    const onKeyClick = e => {
+      if (e.code === 'Escape') {
+        toggleModal();
+      }
+    };
 
-  onKeyClick = e => {
-    if (e.code === 'Escape') {
-      this.props.toggleModal();
-    }
-  };
+    document.addEventListener('keydown', onKeyClick);
+    return () => {
+      document.removeEventListener('keydown', onKeyClick);
+    };
+  }, [toggleModal]);
 
-  onMouseClick = e => {
+  const onMouseClick = e => {
     if (e.target === e.currentTarget) {
-      this.props.toggleModal();
+      toggleModal();
     }
   };
 
-  render() {
-    const {
-      image: { largeImageURL, tags },
-    } = this.props;
-
-    return createPortal(
-      <Overlay onClick={this.onMouseClick}>
-        <ModalBox>
-          <img src={largeImageURL} alt={tags} width="1280" />
-        </ModalBox>
-      </Overlay>,
-      modal
-    );
-  }
-}
+  return createPortal(
+    <Overlay onClick={onMouseClick}>
+      <ModalBox>
+        <img src={largeImageURL} alt={tags} width="1280" />
+      </ModalBox>
+    </Overlay>,
+    modal
+  );
+};
 
 Modal.propTypes = {
   image: PropTypes.shape({
